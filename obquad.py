@@ -163,5 +163,6 @@ class Application(Frame):
             render_digit(starts[i], digit)
 
 root = Tk()
+root.geometry("300x300")
 app = Application(master=root)
 app.mainloop()
