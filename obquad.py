@@ -32,14 +32,22 @@ class Application(Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.decimal = Entry(self)
-        self.decimal.pack(side="top")
+        frame = Frame(self)
+        frame.pack(side="top")
+        grid = frame.grid()
+
+        label = Label(frame, text="Decimal")
+        label.grid(row=0, column=0, sticky=E)
+        self.decimal = Entry(frame)
+        self.decimal.grid(row=0, column=1)
         self.decimal_value = StringVar()
         self.decimal["textvariable"] = self.decimal_value
         self.decimal.bind('<Key-Return>', self.enter_decimal)
 
-        self.quad = Entry(self)
-        self.quad.pack(side="top")
+        label = Label(frame, text="Quad")
+        label.grid(row=1, column=0, sticky=E)
+        self.quad = Entry(frame)
+        self.quad.grid(row=1, column=1)
         self.quad_value = StringVar()
         self.quad["textvariable"] = self.quad_value
         self.quad.bind('<Key-Return>', self.enter_quad)
