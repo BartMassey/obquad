@@ -114,10 +114,10 @@ class Application(Frame):
             4, 3 * size // 4,
             fill="#fff",
         )
-        line(0, 0, 0, 4, fill="#880")
-        line(0, 4, 4, 4, fill="#880")
-        line(4, 4, 4, 0, fill="#880")
-        line(4, 0, 0, 0, fill="#880")
+        line(0, 0, 0, 4, fill="#0ff")
+        line(0, 4, 4, 4, fill="#0ff")
+        line(4, 4, 4, 0, fill="#0ff")
+        line(4, 0, 0, 0, fill="#0ff")
 
         spots = {(r, c) for r in range(5) for c in range(5)}
         missing = {(r, c) for r in (0, 2, 4) for c in (0, 2, 4)}
