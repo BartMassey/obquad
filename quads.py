@@ -1,3 +1,4 @@
+from math import *
 from tkinter import *
 from tkinter.ttk import *
 
@@ -69,21 +70,51 @@ class Application(Frame):
 
     def render_graphic(self):
         cv = self.graphic
-        d = self.graphic_size // 24
+        size = self.graphic_size
+        d = size // 24
+
+        def coord(row, col):
+            s = size / 2
+            x = 2 * (col + 1) * d + 6 * d - s
+            y = 2 * (row + 1) * d + 6 * d - s
+            r = sqrt(x**2 + y**2)
+            t = atan2(y, x)
+            cx = int(r * cos(t - pi / 4) + s)
+            cy = int(r * sin(t - pi / 4) + s)
+            return cx, cy
+
+        cv.delete("all")
+        cv.create_rectangle(
+            size // 4,
+            size // 4,
+            3 * size //
+            4, 3 * size // 4,
+            fill="#fff",
+        )
+        x0, y0 = coord(0, 0)
+        x1, y1 = coord(0, 4)
+        x2, y2 = coord(4, 4)
+        x3, y3 = coord(4, 0)
+        cv.create_line(x0, y0, x1, y1, fill="#880")
+        cv.create_line(x1, y1, x2, y2, fill="#880")
+        cv.create_line(x2, y2, x3, y3, fill="#880")
+        cv.create_line(x3, y3, x0, y0, fill="#880")
+
         spots = {(r, c) for r in range(5) for c in range(5)}
         missing = {(r, c) for r in (0, 2, 4) for c in (0, 2, 4)}
         missing -= {(2, 2)}
         spots -= missing
-
-        def coord(r, c):
-            x = 2 * (c + 1) * d + 6 * d
-            y = 2 * (r + 1) * d + 6 * d
-            return x, y
-
+        ra = d // 3
         for r, c in spots:
             x0, y0 = coord(r, c)
-            r = d // 3
-            cv.create_oval(x0 - r, y0 - r, x0 + r, y0 + r, fill="#000")
+            cv.create_oval(x0 - ra, y0 - ra, x0 + ra, y0 + ra, fill="#000")
+        if False:
+            x, y = coord(0, 0)
+            cv.create_oval(x - ra, y - ra, x + ra, y + ra, fill="#800")
+            x, y = coord(4, 4)
+            cv.create_oval(x - ra, y - ra, x + ra, y + ra, fill="#080")
+            x, y = coord(2, 2)
+            cv.create_oval(x - ra, y - ra, x + ra, y + ra, fill="#008")
 
         def render_digit(start, digit):
             if digit == '0':
@@ -117,10 +148,10 @@ class Application(Frame):
 
         starts = (
             (2, 2),
-            (3, 3),
             (1, 3),
-            (1, 1),
+            (3, 3),
             (3, 1),
+            (1, 1),
         )
 
         for i, digit in enumerate(reversed(self.quad_value.get())):
