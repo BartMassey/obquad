@@ -1,3 +1,6 @@
+# Obduction™ Villain quad calculator
+# Bart Massey 2021
+
 from math import *
 from tkinter import *
 from tkinter.ttk import *
