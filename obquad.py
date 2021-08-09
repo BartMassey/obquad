@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # Obduction™ Villain quad calculator
 # Bart Massey 2021
 
