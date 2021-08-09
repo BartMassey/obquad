@@ -42,26 +42,91 @@ class Application(Frame):
         self.quad["textvariable"] = self.quad_value
         self.quad.bind('<Key-Return>', self.enter_quad)
 
-        self.graphic = Canvas(self)
+        d = 288
+        self.graphic_size = d
+        self.graphic = Canvas(width=d, height=d)
         self.graphic.pack(side="top")
+        self.render_graphic()
     
+    def refresh(self, decimal, quad):
+        if decimal is None or quad is None:
+            decimal = ""
+            quad = ""
+        self.decimal_value.set(decimal)
+        self.quad_value.set(quad)
+        self.render_graphic()
+
+
     def enter_decimal(self, event):
-        value = self.decimal_value.get()
-        value = decimal_to_quad(value)
-        if value is None:
-            self.quad_value.set("")
-            self.decimal_value.set("")
-            return
-        self.quad_value.set(value)
+        decimal = self.decimal_value.get()
+        quad = decimal_to_quad(decimal)
+        self.refresh(decimal, quad)
 
     def enter_quad(self, event):
-        value = self.quad_value.get()
-        value = quad_to_decimal(value)
-        if value is None:
-            self.quad_value.set("")
-            self.decimal_value.set("")
-            return
-        self.decimal_value.set(value)
+        quad = self.quad_value.get()
+        decimal = quad_to_decimal(quad)
+        self.refresh(decimal, quad)
+
+    def render_graphic(self):
+        cv = self.graphic
+        d = self.graphic_size // 24
+        spots = {(r, c) for r in range(5) for c in range(5)}
+        missing = {(r, c) for r in (0, 2, 4) for c in (0, 2, 4)}
+        missing -= {(2, 2)}
+        spots -= missing
+
+        def coord(r, c):
+            x = 2 * (c + 1) * d + 6 * d
+            y = 2 * (r + 1) * d + 6 * d
+            return x, y
+
+        for r, c in spots:
+            x0, y0 = coord(r, c)
+            r = d // 3
+            cv.create_oval(x0 - r, y0 - r, x0 + r, y0 + r, fill="#000")
+
+        def render_digit(start, digit):
+            if digit == '0':
+                return
+
+            r, c = start
+            x0, y0 = coord(r, c)
+
+            if digit == '1':
+                x1, y1 = coord(r - 1, c)
+                cv.create_line(x0, y0, x1, y1, fill="#000")
+                return
+
+            if digit == '2':
+                x1, y1 = coord(r + 1, c)
+                cv.create_line(x0, y0, x1, y1, fill="#000")
+                x1, y1 = coord(r, c + 1)
+                cv.create_line(x0, y0, x1, y1, fill="#000")
+                return
+
+            if digit == '3':
+                x1, y1 = coord(r, c + 1)
+                cv.create_line(x0, y0, x1, y1, fill="#000")
+                x1, y1 = coord(r, c - 1)
+                cv.create_line(x0, y0, x1, y1, fill="#000")
+                x1, y1 = coord(r - 1, c)
+                cv.create_line(x0, y0, x1, y1, fill="#000")
+                return
+
+            assert False
+
+        starts = (
+            (2, 2),
+            (3, 3),
+            (1, 3),
+            (1, 1),
+            (3, 1),
+        )
+
+        for i, digit in enumerate(reversed(self.quad_value.get())):
+            if i >= 5:
+                break
+            render_digit(starts[i], digit)
 
 root = Tk()
 app = Application(master=root)
