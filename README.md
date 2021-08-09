@@ -1,7 +1,7 @@
 # obquad: Villein Quad Arithmetic For Obduction™
 Bart Massey 2021
 
-This Python app is a calculator for the Villein Quad
+This Python 3 app is a calculator for the Villein Quad
 Arithmetic in the game
 [Obduction](https://cyan.com/games/obduction/). It is
 roughly equivalent to the in-game calculator, except that it
