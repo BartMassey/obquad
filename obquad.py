@@ -92,6 +92,17 @@ class Application(Frame):
             cy = int(r * sin(t - pi / 4) + s)
             return cx, cy
 
+        ra = d // 3
+
+        def spot(r, c, fill="#000"):
+            x, y = coord(r, c)
+            cv.create_oval(x - ra, y - r, x + ra, y + ra, fill=fill)
+
+        def line(r0, c0, r1, c1, fill="#000"):
+            x0, y0 = coord(r0, c0)
+            x1, y1 = coord(r1, c1)
+            cv.create_line(x0, y0, x1, y1, fill=fill)
+
         cv.delete("all")
         cv.create_rectangle(
             size // 4,
@@ -100,57 +111,37 @@ class Application(Frame):
             4, 3 * size // 4,
             fill="#fff",
         )
-        x0, y0 = coord(0, 0)
-        x1, y1 = coord(0, 4)
-        x2, y2 = coord(4, 4)
-        x3, y3 = coord(4, 0)
-        cv.create_line(x0, y0, x1, y1, fill="#880")
-        cv.create_line(x1, y1, x2, y2, fill="#880")
-        cv.create_line(x2, y2, x3, y3, fill="#880")
-        cv.create_line(x3, y3, x0, y0, fill="#880")
+        line(0, 0, 0, 4, fill="#880")
+        line(0, 4, 4, 4, fill="#880")
+        line(4, 4, 4, 0, fill="#880")
+        line(4, 0, 0, 0, fill="#880")
 
         spots = {(r, c) for r in range(5) for c in range(5)}
         missing = {(r, c) for r in (0, 2, 4) for c in (0, 2, 4)}
         missing -= {(2, 2)}
         spots -= missing
-        ra = d // 3
         for r, c in spots:
-            x0, y0 = coord(r, c)
-            cv.create_oval(x0 - ra, y0 - ra, x0 + ra, y0 + ra, fill="#000")
-        if False:
-            x, y = coord(0, 0)
-            cv.create_oval(x - ra, y - ra, x + ra, y + ra, fill="#800")
-            x, y = coord(4, 4)
-            cv.create_oval(x - ra, y - ra, x + ra, y + ra, fill="#080")
-            x, y = coord(2, 2)
-            cv.create_oval(x - ra, y - ra, x + ra, y + ra, fill="#008")
+            spot(r, c)
 
         def render_digit(start, digit):
             if digit == '0':
                 return
 
             r, c = start
-            x0, y0 = coord(r, c)
 
             if digit == '1':
-                x1, y1 = coord(r - 1, c)
-                cv.create_line(x0, y0, x1, y1, fill="#000")
+                line(r, c, r - 1, c)
                 return
 
             if digit == '2':
-                x1, y1 = coord(r + 1, c)
-                cv.create_line(x0, y0, x1, y1, fill="#000")
-                x1, y1 = coord(r, c + 1)
-                cv.create_line(x0, y0, x1, y1, fill="#000")
+                line(r, c, r + 1, c)
+                line(r, c, r, c + 1)
                 return
 
             if digit == '3':
-                x1, y1 = coord(r, c + 1)
-                cv.create_line(x0, y0, x1, y1, fill="#000")
-                x1, y1 = coord(r, c - 1)
-                cv.create_line(x0, y0, x1, y1, fill="#000")
-                x1, y1 = coord(r - 1, c)
-                cv.create_line(x0, y0, x1, y1, fill="#000")
+                line(r, c, r, c + 1)
+                line(r, c, r, c - 1)
+                line(r, c, r - 1, c)
                 return
 
             assert False
